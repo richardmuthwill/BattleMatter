@@ -30,6 +30,12 @@ public class Player : NetworkBehaviour {
 	[SerializeField]
 	private Rigidbody deadRigidBody;
 
+	[SerializeField]
+	private NetworkTransform networkTransform;
+
+	[SerializeField]
+	private CharacterController characterController;
+
 	public void Setup ()
 	{
 
@@ -63,10 +69,13 @@ public class Player : NetworkBehaviour {
 			disableOnDeath [i].enabled = false;
 		}
 
+		deadCollider.enabled = true;
 		deadRigidBody.isKinematic = false;
 		deadRigidBody.useGravity = true;
-		deadRigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-		deadCollider.enabled = true;
+		networkTransform.enabled = false;
+		characterController.enabled = false;
+		// 	deadRigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
 
 		Debug.Log (transform.name + " Is dead!");
 

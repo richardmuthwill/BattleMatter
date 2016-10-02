@@ -5,12 +5,14 @@ using System.Collections;
 public class EnergyBallDie : NetworkBehaviour {
 
 	private const string PLAYER_TAG = "Player";
+	private SphereCollider collider;
 
 	public int damage;
 	
 	void Start ()
 	{
         StartCoroutine(DestroyFizz());
+		collider = gameObject.GetComponent<SphereCollider> ();
 	}
 
 	IEnumerator DestroyFizz ()
@@ -18,6 +20,7 @@ public class EnergyBallDie : NetworkBehaviour {
 		yield return new WaitForSeconds(3);
 		this.transform.GetChild (0).GetComponent<ParticleSystem> ().loop = false;
 		yield return new WaitForSeconds(2);
+		collider.enabled = false;
 		CmdDestroyProjectile ();
 	}
 
@@ -27,6 +30,7 @@ public class EnergyBallDie : NetworkBehaviour {
 		this.transform.GetChild (0).gameObject.active = false;
 		this.transform.GetChild (1).gameObject.active = true;
 		this.transform.GetChild (1).GetComponent<ParticleSystem> ().Play ();
+		collider.enabled = false;
 		yield return new WaitForSeconds(2);
 		CmdDestroyProjectile ();
 	}

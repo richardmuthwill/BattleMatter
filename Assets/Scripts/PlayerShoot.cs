@@ -14,11 +14,13 @@ public class PlayerShoot : NetworkBehaviour {
 
 	private PlayerWeapon currentWeapon;
 	private WeaponManager weaponManager;
+	private Player player;
 	private GameObject currentGunbarrel;
 	private Vector3 gunbarrelForward;
 	private AudioClip shootSound;
 	private AudioSource audioSource;
 	public GameObject bulletPrefab;
+	private bool playerDead;
 
 	void Start () 
 	{
@@ -28,26 +30,32 @@ public class PlayerShoot : NetworkBehaviour {
 		}
 
 		weaponManager = GetComponent<WeaponManager> ();
+		player = GetComponent<Player> ();
 		audioSource = this.GetComponent<AudioSource> ();
 
 	}
 		
 	void Update () 
 	{
+		playerDead = player.isDead;
 		currentWeapon = weaponManager.GetCurrentWeapon ();
 		currentGunbarrel = weaponManager.GetCurrentGunbarrel ();
 		shootSound = weaponManager.GetCurrentShootSound ();
 
-		if (currentWeapon.fireRate <= 0) {
-			if (Input.GetButtonDown ("Fire1")) {
-				Shoot ();
+		if (!playerDead) {
+			if (currentWeapon.fireRate <= 0) {
+				if (Input.GetButtonDown ("Fire1")) {
+					Shoot ();
+				}
+			} else {
+				if (Input.GetButtonDown ("Fire1")) {
+					InvokeRepeating ("Shoot", 0f, 1f / currentWeapon.fireRate);
+				} else if (Input.GetButtonUp ("Fire1")) {
+					CancelInvoke ("Shoot");
+				}
 			}
 		} else {
-			if (Input.GetButtonDown ("Fire1")) {
-				InvokeRepeating ("Shoot", 0f, 1f / currentWeapon.fireRate);
-			} else if (Input.GetButtonUp ("Fire1")) {
-				CancelInvoke ("Shoot");
-			}
+			CancelInvoke ("Shoot");
 		}
 
 
