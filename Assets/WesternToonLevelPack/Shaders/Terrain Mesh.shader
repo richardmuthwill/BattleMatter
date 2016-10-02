@@ -1,3 +1,6 @@
+// Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
+// Upgrade NOTE: replaced '_World2Object' with 'unity_WorldToObject'
+
 #warning Upgrade NOTE: unity_Scale shader variable was removed; replaced 'unity_Scale.w' with '1.0'
 // Upgrade NOTE: commented out 'float4 unity_LightmapST', a built-in variable
 // Upgrade NOTE: commented out 'sampler2D unity_Lightmap', a built-in variable
@@ -84,12 +87,12 @@ Shader "Dark Anvil/Terrain Mesh" {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
                 #ifdef LIGHTMAP_OFF
-                    o.shLight = ShadeSH9(float4(mul(_Object2World, float4(v.normal,0)).xyz * 1.0,1)) * 0.5;
+                    o.shLight = ShadeSH9(float4(mul(unity_ObjectToWorld, float4(v.normal,0)).xyz * 1.0,1)) * 0.5;
                 #endif
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
-                o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
+                o.normalDir = mul(float4(v.normal,0), unity_WorldToObject).xyz;
+                o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 #ifndef LIGHTMAP_OFF
                     o.uvLM = v.texcoord1 * unity_LightmapST.xy + unity_LightmapST.zw;
@@ -204,10 +207,10 @@ Shader "Dark Anvil/Terrain Mesh" {
             VertexOutput vert (VertexInput v) {
                 VertexOutput o;
                 o.uv0 = v.texcoord0;
-                o.normalDir = mul(float4(v.normal,0), _World2Object).xyz;
-                o.tangentDir = normalize( mul( _Object2World, float4( v.tangent.xyz, 0.0 ) ).xyz );
+                o.normalDir = mul(float4(v.normal,0), unity_WorldToObject).xyz;
+                o.tangentDir = normalize( mul( unity_ObjectToWorld, float4( v.tangent.xyz, 0.0 ) ).xyz );
                 o.binormalDir = normalize(cross(o.normalDir, o.tangentDir) * v.tangent.w);
-                o.posWorld = mul(_Object2World, v.vertex);
+                o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 o.pos = mul(UNITY_MATRIX_MVP, v.vertex);
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
                 return o;
