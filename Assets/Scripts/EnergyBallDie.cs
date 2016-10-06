@@ -37,9 +37,9 @@ public class EnergyBallDie : NetworkBehaviour {
 	
 	private void OnCollisionEnter (Collision collision)
 	{
-		this.GetComponent<AudioSource> ().Play ();
 		this.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		this.GetComponent<Rigidbody> ().angularVelocity = Vector3.zero;
+		this.GetComponent<AudioSource> ().Play ();
 		LooseHealth (collision);
 		StopCoroutine(DestroyFizz());
 		StartCoroutine (DestroyCollision());

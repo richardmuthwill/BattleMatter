@@ -40,9 +40,9 @@ public class PlayerSetup : NetworkBehaviour {
 		
 			playerUIInstance = Instantiate (playerUIPrefab);
 			playerUIInstance.name = playerUIPrefab.name;
-		}
 
-		GetComponent<Player> ().Setup ();
+			GetComponent<Player> ().PlayerSetup ();
+		}
 	}
 
 	void SetLayerRecursively (GameObject obj, int newLayer)
@@ -79,8 +79,10 @@ public class PlayerSetup : NetworkBehaviour {
 	{
 		Destroy (playerUIInstance);
 
-		if(sceneCamera != null) {
-			sceneCamera.gameObject.SetActive(true);
+		if (isLocalPlayer) {
+			if (sceneCamera != null) {
+				sceneCamera.gameObject.SetActive (true);
+			}
 		}
 
 		GameManager.UnRegisterPlayer (transform.name);
