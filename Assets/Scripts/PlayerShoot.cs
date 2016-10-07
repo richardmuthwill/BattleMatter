@@ -37,6 +37,9 @@ public class PlayerShoot : NetworkBehaviour {
 		
 	void Update () 
 	{
+		if (PauseMenu.isOn)
+			return;
+
 		playerDead = player.isDead;
 		currentWeapon = weaponManager.GetCurrentWeapon ();
 		currentGunbarrel = weaponManager.GetCurrentGunbarrel ();

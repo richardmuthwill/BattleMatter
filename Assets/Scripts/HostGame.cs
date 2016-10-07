@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System;
+using System.Collections;
+using UnityEngine.UI;
 
 public class HostGame : MonoBehaviour {
 
@@ -14,12 +17,12 @@ public class HostGame : MonoBehaviour {
 	/* 
 	 int	Gameplay Type		Name
 	 
-	 1		Team Deathmatch		Teams
-	 2		Free For All		Alone
-	 3		Capture The Flag	Intel
-	 4		Capture The Bases	Defend
-	 5		Bomb				Defuse
-	 6		VIP					Target
+	 0		Team Deathmatch		Teams
+	 1		Free For All		Alone
+	 2		Capture The Flag	Intel
+	 3		Capture The Bases	Defend
+	 4		Bomb				Defuse
+	 5		VIP					Target
 	*/
 
 	void Start () {
@@ -39,35 +42,21 @@ public class HostGame : MonoBehaviour {
 		roomPass = _pass;
 	}
 
-	public void SetRoomSize (uint _size)
+	public void SetRoomSize (string _size)
 	{
-		roomSize = _size;
+		uint u = Convert.ToUInt32 (_size);
+		roomSize = u;
 	}
 
-	public void SetGameType (string _gameType)
+	public void SetGameType (Int32 _gameType)
 	{
-		if (_gameType == "Teams") {
-			gameType = 1;
-		} else if (_gameType == "Alone") {
-			gameType = 2;
-		} else if (_gameType == "Intel") {
-			gameType = 3;
-		} else if (_gameType == "Defend") {
-			gameType = 4;
-		} else if (_gameType == "Defuse") {
-			gameType = 5;
-		} else if (_gameType == "Target") {
-			gameType = 6;
-		}
+		gameType = _gameType;
 
 	}
 
 	public void CreateRoom ()
 	{
-		if (roomName != "" && roomName != null) {
-			Debug.Log ("Creating Room: " + roomName + " with room for " + roomSize + " players and a Gametype of " + gameType);
-
-			// Create room
+		if (roomName != "" && roomName != null && roomSize > 0 && roomSize != null) {
 			networkManager.matchMaker.CreateMatch (roomName, roomSize, true, roomPass, "", "", 0, 0, networkManager.OnMatchCreate);
 		}
 	}

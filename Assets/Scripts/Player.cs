@@ -101,8 +101,8 @@ public class Player : NetworkBehaviour {
 			disableOnDeath [i].enabled = false;
 		}
 
-
-		gunsObject.transform.parent = null;
+		// Test dropping gun
+		// gunsObject.transform.parent = null;
 
 		deadCollider.enabled = true;
 		deadRigidBody.isKinematic = false;
