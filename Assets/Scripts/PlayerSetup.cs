@@ -24,9 +24,12 @@ public class PlayerSetup : NetworkBehaviour {
 
 	Camera sceneCamera;
 
+	private LocalPlayer localPlayer;
+
 	void Start ()
 	{
 		mask = LayerMask.NameToLayer ("RemoteLayer");
+		localPlayer = GameObject.FindGameObjectWithTag ("NetworkManager").GetComponent<LocalPlayer> ();
 		if (!isLocalPlayer) {
 			DisableComponents ();
 			AssignRemoteLayer ();
@@ -62,6 +65,8 @@ public class PlayerSetup : NetworkBehaviour {
 		Player _player = GetComponent<Player> ();
 
 		GameManager.RegisterPlayer (_netID, _player);
+
+		// localPlayer.local = _player.gameObject;
 	}
 
 	void AssignRemoteLayer () 

@@ -21,10 +21,20 @@ public class PlayerUI : MonoBehaviour {
 	{
 		pauseMenu.SetActive (!pauseMenu.activeSelf);
 		PauseMenu.isOn = pauseMenu.activeSelf;
-		if (PauseMenu.isOn) {
-			Cursor.visible = true;
-		} else {
-			Cursor.visible = false;
-		}
+		Cursor.visible = pauseMenu.activeSelf;
+	}
+
+	public void HidePauseMenu ()
+	{
+		pauseMenu.SetActive (false);
+		PauseMenu.isOn = false;
+		Cursor.visible = false;
+	}
+
+	public void ShowPauseMenu ()
+	{
+		pauseMenu.SetActive (true);
+		PauseMenu.isOn = true;
+		Cursor.visible = true;
 	}
 }

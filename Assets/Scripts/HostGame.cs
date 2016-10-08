@@ -61,4 +61,9 @@ public class HostGame : MonoBehaviour {
 		}
 	}
 
+	public void QuickCreateRoom ()
+	{
+		networkManager.matchMaker.CreateMatch ("My Awesome Room", 20, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
+	}
+
 }

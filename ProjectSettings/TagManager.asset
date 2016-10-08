@@ -9,7 +9,8 @@ TagManager:
   - GunBarrel
   - GunHolder
   - Player_Collider
-  - New Tag
+  - PlayerUI
+  - NetworkManager
   layers:
   - Default
   - TransparentFX
