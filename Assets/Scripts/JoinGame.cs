@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
 using System.Collections.Generic;
+using System.Collections;
 
 public class JoinGame : MonoBehaviour {
 
@@ -19,6 +20,8 @@ public class JoinGame : MonoBehaviour {
 
 	void Start ()
 	{
+		Cursor.lockState = CursorLockMode.None;
+
 		NetworkManager.singleton.StartMatchMaker();
 
 		RefreshRoomList ();
@@ -27,6 +30,9 @@ public class JoinGame : MonoBehaviour {
 	public void RefreshRoomList ()
 	{
 		ClearRoomList ();
+		if (NetworkManager.singleton.matchMaker == null) {
+			NetworkManager.singleton.StartMatchMaker ();
+		}
 		NetworkManager.singleton.matchMaker.ListMatches (0, 20, "", true, 0, 0, OnMatchList);
 		status.text = "Loading Rooms...";
 	}
@@ -109,8 +115,30 @@ public class JoinGame : MonoBehaviour {
 	public void JoinRoom (MatchInfoSnapshot _match)
 	{
 		NetworkManager.singleton.matchMaker.JoinMatch (_match.networkId, "", "", "", 0, 0, NetworkManager.singleton.OnMatchJoined);
+		StartCoroutine (WaitForJoin());
+	}
+
+	IEnumerator WaitForJoin ()
+	{
 		ClearRoomList ();
-		status.text = "Joining Room...";
+
+		int countdown = 10;
+		while (countdown > 0) {
+			status.text = "Joining Room... (" + countdown + ")";
+			yield return new WaitForSeconds (1);
+			countdown--;
+		}
+
+		status.text = "Failed to connect.";
+		yield return new WaitForSeconds (1);
+
+		MatchInfo matchInfo = NetworkManager.singleton.matchInfo;
+		if (matchInfo != null) {
+			NetworkManager.singleton.matchMaker.DropConnection(matchInfo.networkId, matchInfo.nodeId, 0, NetworkManager.singleton.OnDropConnection);
+			NetworkManager.singleton.StopHost ();
+		}
+
+		RefreshRoomList ();
 	}
 
 }

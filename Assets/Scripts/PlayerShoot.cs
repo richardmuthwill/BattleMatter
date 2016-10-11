@@ -120,7 +120,7 @@ public class PlayerShoot : NetworkBehaviour {
 			RaycastHit _hit;
 			if (Physics.Raycast (cam.transform.position, cam.transform.forward, out _hit, currentWeapon.range, mask)) {
 				if (_hit.collider.tag == PLAYER_TAG) {
-					CmdPlayerShot (_hit.collider.name, currentWeapon.damage);
+					CmdPlayerShot (_hit.collider.name, currentWeapon.damage, transform.name);
 				}
 			}
 		}
@@ -138,6 +138,7 @@ public class PlayerShoot : NetworkBehaviour {
 		bullet.GetComponent<Rigidbody> ().velocity = forward * speed;
 		EnergyBallDie bulletScript = bullet.GetComponent<EnergyBallDie> (); 
 		bulletScript.damage = damage;
+		bulletScript.firedBy = transform.name;
 
 		// spawn the bullet on the clients
 		NetworkServer.Spawn(bullet);
@@ -147,12 +148,12 @@ public class PlayerShoot : NetworkBehaviour {
     }
 
 	[Command]
-	void CmdPlayerShot (string _playerID, int _damage)
+	void CmdPlayerShot (string _playerID, int _damage, string _sourceID)
 	{
 		Debug.Log (_playerID + " has been shot");
 
 		Player _player = GameManager.GetPlayer(_playerID);
-		_player.RpcTakeDamage (_damage);
+		_player.RpcTakeDamage (_damage, _sourceID);
 	}
 
 }	

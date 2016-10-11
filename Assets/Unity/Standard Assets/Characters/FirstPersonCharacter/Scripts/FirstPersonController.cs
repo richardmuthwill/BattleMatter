@@ -61,15 +61,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
         // Update is called once per frame
         private void Update()
         {
-			if (PauseMenu.isOn)
-				return;
-
-            RotateView();
-            // the jump state needs to read here to make sure it is not missed
-            if (!m_Jump)
-            {
-                m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
-            }
+			if (!PauseMenu.isOn) {
+				RotateView ();
+			
+				// the jump state needs to read here to make sure it is not missed
+				if (!m_Jump) {
+					m_Jump = CrossPlatformInputManager.GetButtonDown ("Jump");
+				}
+			}
 
             if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
             {
@@ -99,6 +98,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
 		{
 			float speed;
 			GetInput (out speed);
+
+			float speedCopy = speed;
+			if (PauseMenu.isOn) {
+				speed = 0f;
+			} else {
+				speed = speedCopy;
+			}
+
 			// always move along the camera forward as it is the direction that it being aimed at
 			Vector3 desiredMove = transform.forward * m_Input.y + transform.right * m_Input.x;
 

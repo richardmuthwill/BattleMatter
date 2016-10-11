@@ -8,6 +8,8 @@ public class EnergyBallDie : NetworkBehaviour {
 	private SphereCollider collider;
 
 	public int damage;
+
+	public string firedBy;
 	
 	void Start ()
 	{
@@ -49,19 +51,19 @@ public class EnergyBallDie : NetworkBehaviour {
 	void LooseHealth (Collision col)
 	{
 		if (col.collider.tag == PLAYER_TAG) {
-			CmdLooseHealth (col.collider.name, damage);
+			CmdLooseHealth (col.collider.name, damage, firedBy);
 		}
 	}
 
 	[Command]
-	void CmdLooseHealth (string _playerID, int _damage)
+	void CmdLooseHealth (string _playerID, int _damage, string _sourceID)
 	{
 		Debug.Log (_playerID + " has been shot");
 
 		Player _player = GameManager.GetPlayer(_playerID);
-		_player.RpcTakeDamage (_damage);
+		_player.RpcTakeDamage (_damage, _sourceID);
 	}
-	
+
 	[Command]
 	void CmdDestroyProjectile ()
 	{

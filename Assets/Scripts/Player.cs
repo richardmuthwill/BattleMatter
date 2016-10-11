@@ -12,13 +12,19 @@ public class Player : NetworkBehaviour {
 		protected set { _isDead = value; }
 	}
 
-
+	// https://www.youtube.com/watch?v=makGoauwngQ&list=PLPV2KyIb3jR5PhGqsO7G4PsbEC_Al-kPZ&index=25
 
 	[SerializeField]
 	private int maxHealth = 100;
 
 	[SyncVar]
 	private int currentHealth;
+
+	[SyncVar]
+	public int kills;
+
+	[SyncVar]
+	public int deaths;
 
 	[SerializeField]
 	private Behaviour[] disableOnDeath;
@@ -80,7 +86,7 @@ public class Player : NetworkBehaviour {
 	}
 
 	[ClientRpc]
-	public void RpcTakeDamage (int _amount)
+	public void RpcTakeDamage (int _amount, string _sourceID)
 	{
 		if (isDead)
 			return;
@@ -90,12 +96,20 @@ public class Player : NetworkBehaviour {
 		Debug.Log (transform.name + " now has " + currentHealth + " health");
 
 		if (currentHealth <= 0) {
-			Die ();
+			Die (_sourceID);
 		}
 	}
 
-	private void Die () {
+	private void Die (string _sourceID) {
 		isDead = true;
+
+		Player sourcePlayer = GameManager.GetPlayer (_sourceID);
+
+		if (sourcePlayer != null) {
+			sourcePlayer.kills++;
+		}
+
+		deaths++;
 
 		for (int i = 0; i < disableOnDeath.Length; i++) {
 			disableOnDeath [i].enabled = false;
@@ -125,7 +139,7 @@ public class Player : NetworkBehaviour {
 			return;
 
 		if (Input.GetKeyDown (KeyCode.K)) {
-			RpcTakeDamage (9999);
+			RpcTakeDamage (9999, "suicide");
 		}
 	}
 
